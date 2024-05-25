@@ -30,8 +30,8 @@ To be done:
    pip install biopython numpy matplotlib
 
 ## Usage
-
-python KmerEstimator.py <input_file> <min_k> <max_k>
+   ```bash
+   python KmerEstimator.py <input_file> <min_k> <max_k>
 
 - '<input_file>': Path to the input file containing sequences.
 - '<min_k>': Minimum k-mer length to consider (should set default).
