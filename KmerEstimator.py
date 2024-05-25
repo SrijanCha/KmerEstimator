@@ -3,6 +3,7 @@ from typing import List
 import matplotlib.pyplot as plt
 from collections import Counter
 import sys
+import random
 
 
 def compute_kmer_dict(reads: list[str], k: int) -> dict[str, int]:
