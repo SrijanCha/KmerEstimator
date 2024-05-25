@@ -125,7 +125,10 @@ def optimal_kmer_length(kmer_counts_list: List[Counter]) -> int:
 
     return kmer_length
 
-   
+def random_reads_generator(n, l):
+    alphabet = ["A", "C", "T", "G"]
+    reads = [''.join(random.choices(alphabet, k=l)) for _ in range(n)]
+    return reads
 
 def main(fasta_file: str, min_k: int, max_k: int):
     sequences = read_fasta(fasta_file)
@@ -153,3 +156,4 @@ if __name__ == "__main__":
     max_k = int(sys.argv[3])
 
     main(fasta_file, min_k, max_k)
+
