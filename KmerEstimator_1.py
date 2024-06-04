@@ -61,7 +61,6 @@ def compute_kmer_dist(kmer_counts: Counter) -> Counter:
 
 def get_kmer_histogram(distribution: Counter, k: int, max_xval:int = None, max_yval: int = None) -> None:
     """ Plot a histogram of the kmer counts
-
     Parameters
     ----------
     distribution : Counter
@@ -72,7 +71,6 @@ def get_kmer_histogram(distribution: Counter, k: int, max_xval:int = None, max_y
         Maximum x-axis value for the plot.
     max-yval : int, optional
         Maximum y-axis value for the plot.
-
     """
     fig, ax = plt.subplots()
     ax.bar(distribution.keys(), distribution.values())
@@ -97,58 +95,14 @@ def get_kmer_histogram(distribution: Counter, k: int, max_xval:int = None, max_y
     #     plt.title(f"Histogram of k-mer counts for k={k}")
     #     plt.show()
     # return distribution
-    
-def save_kmer_histogram(distribution: Counter, k: int, max_xval:int = None, max_yval: int = None) -> None:
-    """ Plot a histogram of the kmer counts
-
-    Parameters
-    ----------
-    distribution : Counter
-        Dictionary of k-mer count distribution
-    k : int
-        Length of k-mers.
-    max_xval : int, optional
-        Maximum x-axis value for the plot.
-    max-yval : int, optional
-        Maximum y-axis value for the plot.
-
-    """
-    fig, ax = plt.subplots()
-    ax.bar(distribution.keys(), distribution.values())
-    ax.set_xlabel("Count")
-    ax.set_ylabel("Number of kmers")
-    if max_xval is not None:
-        ax.set_xlim(left=0, right=max_xval)
-    if max_yval is not None:
-        ax.set_ylim(bottom=0, top=max_yval)
-    plt.title(f"Histogram of k-mer counts for k={k}")
-    
-    filename = str(k) + "_distribution.png"
-    plt.savefig(filename)
-    # if plot: 
-    #     fig = plt.figure()
-    #     ax = fig.add_subplot(111)
-    #     ax.bar(distribution.keys(), distribution.values())
-    #     ax.set_xlabel("Count")
-    #     ax.set_ylabel("Number of kmers")
-    #     if max_xval is not None: 
-    #         ax.set_xlim(left=0, right=max_xval)
-    #     if max_yval is not None: 
-    #         ax.set_ylim(bottom=0, top=max_yval)
-    #     plt.title(f"Histogram of k-mer counts for k={k}")
-    #     plt.show()
-    # return distribution
-   
 
 def read_fastq(filename: str) -> List[str]:
     """
     Read a FASTQ file and return the sequences as a list of strings.
-
     Parameters
     ----------
     filename : str
         Path to the FASTQ file.
-
     Returns
     -------
     List[str]
@@ -176,12 +130,10 @@ def read_fastq(filename: str) -> List[str]:
 def optimal_kmer_length(kmer_counts_list: List[Counter]) -> int:
     """
     Return optimal kmer length based on list of kmer counts.
-
     Parameters
     ----------
     kmer_counts_list: List[Counter]
         List of counts for each kmer length
-
     Returns
     -------
     int
@@ -190,12 +142,10 @@ def optimal_kmer_length(kmer_counts_list: List[Counter]) -> int:
 def optimal_kmer_length(kmer_counts_list: List[Counter]) -> int:
     """
     Return optimal kmer length based on list of kmer counts.
-
     Parameters
     ----------
     kmer_counts_list: List[Counter]
         List of counts for each kmer length
-
     Returns
     -------
     int
@@ -206,27 +156,27 @@ def optimal_kmer_length(kmer_counts_list: List[Counter]) -> int:
     max_unique_kmers = 0
     kmer_length = 0
     check_decrease = param * 3 + 1
-    
+
     def is_decreasing(index):
         """Check if the counts are decreasing from a given index."""
         return (len(kmer_counts_list[index]) < len(kmer_counts_list[index - param]) and
                 len(kmer_counts_list[index - param]) < len(kmer_counts_list[index - param * 2]))
-    
+
     for index in range(len(kmer_counts_list)):
         # ignore kmers that are too small
         if index < param:
             continue
-        
+
         unique_kmers = len(kmer_counts_list[index])
 
         if max_unique_kmers < unique_kmers:
             max_unique_kmers = unique_kmers
             kmer_length = index
-        
+
         # end search early if kmer count is consistently decreasing
         if index >= check_decrease and is_decreasing(index):
             break
-        
+
         if index == check_decrease:
             check_decrease += param * 3
     return kmer_length
@@ -269,8 +219,6 @@ def run_kmer_analysis(sequences: List[str], min_k: int, max_k: int) -> Tuple[int
         # print(f"k-mer counts for k={k}: {combined_kmer_counts}")
 
     optimal_k = optimal_kmer_length(kmer_counts_list) + min_k
-    save_kmer_histogram(combined_kmer_counts)
-    
     return optimal_k, kmer_counts_list
 
 def main(fastq_file: str, min_k: int, max_k: int):
@@ -279,7 +227,7 @@ def main(fastq_file: str, min_k: int, max_k: int):
     if not sequences:
         print("No sequences found. Please check the FASTQ file.")
         return
-    
+
     # Print the first few sequences
     # print("First few sequences:")
     # for seq in sequences[:5]:
@@ -297,7 +245,7 @@ if __name__ == "__main__":
     if len(sys.argv) != 4:
         print("Usage: python KmerEstimator.py <fastq_file> <min_k> <max_k>")
         sys.exit(1)
-    
+
     fastq_file = sys.argv[1]
     min_k = int(sys.argv[2])
     max_k = int(sys.argv[3])
