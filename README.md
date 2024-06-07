@@ -2,7 +2,7 @@
 
 ## Description
 
-The `KmerEstimator.py` script is designed to estimate the optimal k-mer length for a given sequence dataset. The script reads sequences from a FASTQ file, generates k-mers of varying lengths, and computes the optimal k-mer length based on the distribution of k-mer counts.
+This program is designed to estimate the optimal k-mer length for a given sequence dataset. The script reads sequences from a FASTQ file, generates k-mers of varying lengths, and computes the optimal k-mer length based on the distribution of k-mer counts.
 
 ## Installation
 
