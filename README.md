@@ -26,9 +26,9 @@ The basic usage of `kmerestimator` is:
 
 To run `kmerestimator` on a small test example (using files in this repo):
    ```bash
-   kmerestimator test_2.fq -o new_histogram
+   kmerestimator test.fq -o new_histogram
 ```
-- `test_2.fq` is the input FASTQ file.
+- `test.fq` is the input FASTQ file.
 - `new_histogram` is the directory where the histograms will be saved.
 
 ## kmerestimator options
