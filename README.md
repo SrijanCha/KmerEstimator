@@ -25,7 +25,7 @@ Installation requires the `numpy` and `matplotlib` libraries to be installed. Yo
    ```bash
    pip install numpy matplotlib
 ```
-Once required libraries are installed, you can install `KmerEstimator` with the following command:
+Once required libraries are installed, you can install `kmerestimator` with the following command:
    ```bash
    python setup.py install
 ```
