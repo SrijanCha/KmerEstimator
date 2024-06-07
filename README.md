@@ -36,7 +36,7 @@ The basic usage of `kmerestimator` is:
    ```bash
    kmerestimator [fastq_file] -o [output_directory]
 ```
-- `[fastq_file]`: (Optional) Path to the input FASTQ file containing sequences.
+- `[fastq_file]`: Path to the input FASTQ file containing sequences.
 - `-o`, `--output`: (Optional) Directory to save the histograms. Default is "histograms".
 
 To run `kmerestimator` on a small test example (using files in this repo):
