@@ -21,41 +21,34 @@ The `KmerEstimator.py` script is designed to estimate the optimal k-mer length f
 
 ## Installation
 
-1. Clone the repository or download the `KmerEstimator.py` file.
-2. Ensure you have the required libraries installed:
+Installation requires the `numpy` and `matplotlib` libraries to be installed. You can install these with `pip`:
    ```bash
-   pip install biopython numpy matplotlib
-
-## Usage
-   ```bash
-   python KmerEstimator.py <input_file> -o <output_directory>
+   pip install numpy matplotlib
 ```
-- `<input_file>`: Path to the input file containing sequences.
-- `-o`, `--output`: (Optional) Directory to save the histograms. Default is `"histograms"`.
+Once required libraries are installed, you can install `KmerEstimator` with the following command:
+```bash
+   python setup.py install
+```
+If the install was successful, typing `kmerestimator --help` should show a useful message.
 
-## Complete Usage
+## Basic Usage
+The basic usage of `kmerestimator` is:
    ```bash
-   python KmerEstimator.py [fastq_file] -o [output_directory]
+   kmerestimator [fastq_file] -o [output_directory]
 ```
 - `[fastq_file]`: (Optional) Path to the input FASTQ file containing sequences.
 - `-o`, `--output`: (Optional) Directory to save the histograms. Default is "histograms".
 
-## Example
+To run `kmerestimator` on a small test example (using files in this repo):
    ```bash
-   python KmerEstimator.py seq.fq -o histogram_dir
+   kmerestimator test_2.fq -o new_histogram
 ```
-In this example:
-
 - `test_2.fq` is the input FASTQ file.
 - `new_histogram` is the directory where the histograms will be saved.
 
-## Output 
-
-The script generates an output containing:
-
-- Optimal k-mer length.
-- Relevant statistics and analysis for each k-mer length considered.
-- Histogram images saved in the specified output directory.
+## kmerestimator options
+The only required input to `kmerestimator` is a FASTQ file. Users may additionally specify the options below:
+- `-o directory`, `--output directory`: Output histograms to directory. By default, the histograms are written to `histograms` directory. 
 
 ## Credits
 
