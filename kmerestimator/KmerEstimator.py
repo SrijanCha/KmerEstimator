@@ -4,7 +4,10 @@ from typing import List, Tuple
 import matplotlib.pyplot as plt
 from collections import Counter
 import sys
-import random
+import gc
+import time
+from memory_profiler import memory_usage
+import argparse
 
 
 def compute_kmer_dict(reads: list[str], k: int) -> Counter:
@@ -82,8 +85,12 @@ def get_kmer_histogram(distribution: Counter, k: int, max_xval:int = None, max_y
             os.makedirs(save_dir)
         filename = os.path.join(save_dir, f"k_{k}_distribution.png")
         plt.savefig(filename)
+        plt.close(fig)
     else:
         plt.show()
+        plt.close(fig)
+    gc.collect()
+    
 
     
 def read_fastq(filename: str) -> List[str]:
@@ -153,44 +160,10 @@ def optimal_kmer_length(kmer_counts_list: List[Counter]) -> int:
         if index == check_decrease:
             check_decrease += param * 3
     return kmer_length
-
-
-def kmer_num_histogram(kmer_counts_list: List[Counter], max_xval: int, save_dir: str = None):
-    """
-    Create histogram of kmer size vs number of kmers. This should be concave and show a clear global maximum for best k to be accurate.
-    Parameters
-    ----------
-    kmer_counts_list : List[Counter]
-        List of counts for each kmer-length
-    max_xval: 
-        Max k-mer size given by user
-    """
-    # int set to 1/20 of kmer_counts_list (arbitrary value)
-    
-    M_for_k = dict()
-    
-    for index in range(len(kmer_counts_list)):
-        M_for_k[index] = len(kmer_counts_list[index])
-    
-    fig, ax = plt.subplots()
-    
-    ax.bar(M_for_k.keys(), M_for_k.values())
-    ax.set_xlabel("k-mer Size")
-    ax.set_ylabel("Number of Unique k-mers")
-    ax.set_xlim(left=0, right=max_xval)
-    
-    plt.title(f"Histogram of Unique Kmers for values of k")
-    if save_dir:
-        if not os.path.exists(save_dir):
-            os.makedirs(save_dir)
-        filename = os.path.join(save_dir, f"all_k_distribution.png")
-        plt.savefig(filename)
-    else:
-        plt.show()
     
     
 
-def run_kmer_analysis(sequences: List[str]) -> Tuple[int, List[Counter]]:
+def run_kmer_analysis(sequences: List[str], save_dir: str) -> Tuple[int, List[Counter]]:
     """
     Run k-mer analysis over a range of k values and determine the optimal k-mer length.
     
@@ -208,15 +181,15 @@ def run_kmer_analysis(sequences: List[str]) -> Tuple[int, List[Counter]]:
     Tuple[int, List[Counter]]
         Optimal k-mer length and list of k-mer counts.
     """
+    start_time = time.time()
+    mem_usage = memory_usage(-1, interval=1, timeout=None)
     kmer_counts_list = []
-    save_dir = "histograms"
-    k_values = list(range(11, 132, 10))
+    k_values = list(range(11, 102, 10))
     min_seq_len = len(sequences[0])
 
     for k in k_values:
         if k > min_seq_len:
             continue
-        print(k)
         combined_kmer_counts = Counter()
         for sequence in sequences:
             kmer_counts = compute_kmer_dict([sequence], k)
@@ -228,13 +201,14 @@ def run_kmer_analysis(sequences: List[str]) -> Tuple[int, List[Counter]]:
     optimal_k_initial = optimal_kmer_length(kmer_counts_list) + 11
 
     # Refine the search in the range [optimal_k_initial - 10, optimal_k_initial + 10]
-    refined_k_values = list(range(max(11, optimal_k_initial - 10), min(131, optimal_k_initial + 10) + 1))
+    refined_k_values = list(range(max(11, optimal_k_initial - 10), min(101, optimal_k_initial + 10) + 1))
+    # refined_k_values = [k for k in refined_k_values if k % 2 != 0] # Keep only odd values
     kmer_counts_list_refined = []
+    
 
     for k in refined_k_values:
         if k > min_seq_len:
             continue
-        print(k)
         combined_kmer_counts = Counter()
         for sequence in sequences:
             kmer_counts = compute_kmer_dict([sequence], k)
@@ -245,31 +219,34 @@ def run_kmer_analysis(sequences: List[str]) -> Tuple[int, List[Counter]]:
 
     optimal_k_final = optimal_kmer_length(kmer_counts_list_refined) + refined_k_values[0]
 
-    kmer_num_histogram(kmer_counts_list_refined, max_xval=refined_k_values[-1], save_dir=save_dir)
+    
 
-    return optimal_k_final, kmer_counts_list_refined
+    end_time = time.time()
+    max_mem_usage = max(mem_usage)
+
+    return optimal_k_final, kmer_counts_list_refined, end_time - start_time, max_mem_usage
 
 
-def main(fastq_file: str):
+def main(fastq_file: str, save_dir: str):
     sequences = read_fastq(fastq_file)
     print(f"read {len(sequences)} sequences from {fastq_file}")
     if not sequences:
         print("No sequences found. Please check the FASTQ file.")
         return
 
-    optimal_k, kmer_counts_list = run_kmer_analysis(sequences)
+    optimal_k, _, runtime, max_mem_usage = run_kmer_analysis(sequences, save_dir)
+    print(f"Memory usage: {max_mem_usage} MB")
+    print(f"Runtime: {runtime} seconds")   
     print(f"Optimal k-mer length: {optimal_k}")
-    # for k, kmer_counts in zip(range(min_k, max_k + 1), kmer_counts_list):
-    #     print(f"\nk-mer counts for k={k}:")
-    #     for kmer, count in kmer_counts.items():
-    #         print(f"{kmer}: {count}")
+
 
 
 if __name__ == "__main__":
-    if len(sys.argv) != 2:
-        print("Usage: python KmerEstimator.py <fastq_file>")
-        sys.exit(1)
-    
-    fastq_file = sys.argv[1]
+    parser = argparse.ArgumentParser(description="K-mer analysis tool")
+    # Input
+    parser.add_argument("fastq_file", help="Path to the FASTQ file")
+    # Output options
+    parser.add_argument("-o", "--output", help="Directory to save the histograms", default="histograms", required=False)
+    args = parser.parse_args()
 
-    main(fastq_file)
+    main(args.fastq_file, args.output)
