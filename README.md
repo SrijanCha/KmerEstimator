@@ -6,9 +6,9 @@ This program is designed to estimate the optimal k-mer length for a given sequen
 
 ## Installation
 
-Installation requires the `numpy` and `matplotlib` libraries to be installed. You can install these with `pip`:
+Installation requires the `numpy` and `matplotlib` and `memory-profiler` libraries to be installed. You can install these with `pip`:
    ```bash
-   pip install numpy matplotlib
+   pip install numpy matplotlib memory-profiler
 ```
 Once required libraries are installed, you can install `kmerestimator` with the following command:
    ```bash
