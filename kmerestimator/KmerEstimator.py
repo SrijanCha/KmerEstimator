@@ -1,4 +1,5 @@
-#!/usr/bin/env python
+# kmerestimator/kmerestimator.py
+
 
 import os
 import numpy as np
