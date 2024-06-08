@@ -4,12 +4,12 @@ setup(
 	version='0.7.0',
 	author='Srijan Chakraborty, Emily Liang, William Chu',
 	description='A kmer estimator for genome assemblies',
-    license='MIT'
+    license='MIT',
 	packages=find_packages(),
     install_requires = [
         'numpy',
         'matplotlib'
-    ]
+    ],
     
 	classifiers=[
 		'Programming Language :: Python :: 3',
