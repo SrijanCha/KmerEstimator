@@ -230,21 +230,7 @@ def run_kmer_analysis(sequences: List[str], save_dir: str) -> Tuple[int, List[Co
     return optimal_k_final, kmer_counts_list_refined, end_time - start_time, max_mem_usage
 
 
-def main(fastq_file: str, save_dir: str):
-    sequences = read_fastq(fastq_file)
-    print(f"read {len(sequences)} sequences from {fastq_file}")
-    if not sequences:
-        print("No sequences found. Please check the FASTQ file.")
-        return
-
-    optimal_k, _, runtime, max_mem_usage = run_kmer_analysis(sequences, save_dir)
-    print(f"Memory usage: {max_mem_usage} MB")
-    print(f"Runtime: {runtime} seconds")   
-    print(f"Optimal k-mer length: {optimal_k}")
-
-
-
-if __name__ == "__main__":
+def main():
     parser = argparse.ArgumentParser(description="K-mer analysis tool")
     # Input
     parser.add_argument("fastq_file", help="Path to the FASTQ file")
@@ -252,4 +238,17 @@ if __name__ == "__main__":
     parser.add_argument("-o", "--output", help="Directory to save the histograms", default="histograms", required=False)
     args = parser.parse_args()
 
-    main(args.fastq_file, args.output)
+    sequences = read_fastq(args.fastq_file)
+    print(f"read {len(sequences)} sequences from {args.fastq_file}")
+    if not sequences:
+        print("No sequences found. Please check the FASTQ file.")
+        return
+
+    optimal_k, _, runtime, max_mem_usage = run_kmer_analysis(sequences, args.output)
+    print(f"Memory usage: {max_mem_usage} MB")
+    print(f"Runtime: {runtime} seconds")   
+    print(f"Optimal k-mer length: {optimal_k}")
+
+if __name__ == "__main__":
+    main()
+
